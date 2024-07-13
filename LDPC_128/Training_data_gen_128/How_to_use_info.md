@@ -6,11 +6,17 @@ The entry function is defined in Main_train.py file. To customize it to your sce
 1) Check and make sure all Python packages in each file of subdirectory are installed; 
 2) In line 17-22 of Main_train.py, modify the arguments in line 17. For code snippet like this:   
     sys.argv = "python 2.7 2.7 100 1000 CCSDS_ldpc_n128_k64.alist".split()
+   
     GL.set_map('snr_lo', float(sys.argv[1]))
+   
     GL.set_map('snr_hi', float(sys.argv[2]))
+   
     GL.set_map('batch_size', int(sys.argv[3]))
+   
     GL.set_map('training_batch_number', int(sys.argv[4]))
+   
     GL.set_map('H_filename', sys.argv[5])
+   
 substitue your appropriate evaluations for those arguments of line 17, each of which generates a map in line 18-22 separately
 for later populating later variables.
 In our scenario, the lower limit and upper limit of SNRs are the same 2.7dB for the AWGN channel, denoting sampling from one
