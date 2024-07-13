@@ -1,0 +1,28 @@
+Claim:The credits of some code snippets are contributed to their original owners definitely, we promise to  reuse them for academic purpose only. 
+       Surely we are not intended to infringe any intellectual copyright, please contact us for immediate corrections if any. 
+       
+The entry function is defined in ldpc_128_training.py file. To customize it to your scenario, just follow the listed steps 
+(Assume Spyder IDE run in Anaconda fo Win10):
+1) Check and make sure all Python packages in each file of subdirectory are installed; 
+2) In ldpc_128_training.py, modify the arguments in line 12 if needed:
+    sys.argv = "python 2.7 2.7 100 1000 12 CCSDS_ldpc_n128_k64.alist NMS-1".split()
+   
+The two arguments differed from arguments of Main_train.py in Training_data_gen128 director are the  maximum iteration and the NMS type 
+chosen from normalized min-sum decoding family, evaluated by '12' and  'NMS-1' respectively, these sy.argv will be transmitted to
+the function defined in global_setting(argv) of globalmap.py file. In the global_setting(argv), mappings are binded, and some specifi options have to
+in accordance with settings in Main_train.py: set_map('ALL_ZEROS_CODEWORD_TRAINING', False)
+
+3) In the definiton of function logistic_setting() in globalmap.py file, this line of code: restore_step = '',  is initiated. Then once the training
+process is accidenttally interrupted, we can set  restore_step = 'latest' to resume the training since the recorded latest checkpoint without starting 
+from scratch.
+
+4) The training parameters of stochastic gradient descending adopt the Adam optimizer whose values are set in the definition of global_setting(argv) 
+again in globalmap.py file. And the training data is fetched from the directory in definition of data_setting(code,unit_batch_size) of the same file.
+Notably, the directory is actually the output data path in Training_data_gen_128 module.
+   
+5) Click the 'Run file' button in the menu of Spyder, it is expected a training of NMS as a neural network model will start off.
+And after training is done, the output data file is all failed decoding cases after the well-trained model traverses all the training samples.
+   
+Notice: The records in the output file include the whole iterative decoding information of each of all the decoding failures of NMS. In our examplary 
+setting, maximum iteration equal to 12 implies a list of length 12+1=13 for each bit of one decoding failure recorded, where '+1' comes from taking into
+account the received bit soft information as well.
