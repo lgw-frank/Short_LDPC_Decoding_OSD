@@ -1,5 +1,6 @@
 Claim:The credits of some source codes are attributed to their original owners definitely, we promise to  reuse them for academic purpose only. 
        Surely we are not intended to infringe any intellectual copyright, please contact us for immediate corrections if any. 
+       
 The entry function is defined in Main_train.py file. To customize it to your scenario, just follow the listed steps 
 (Assume Spyder IDE run in Anaconda fo Win10):
 1) Check and make sure all Python packages in each file of subdirectory are installed; 
