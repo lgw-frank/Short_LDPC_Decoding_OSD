@@ -34,4 +34,5 @@ for more codes: see https://rptu.de/channel-codes/ml-simulation-results
             print("Data for training generated successfully!")
    
 Notice: According to line 55, we can check if the data file, or the ultimate output of this module,
-with designated name is successfully generated in the designated directory.
+with designated name is successfully generated in the designated directory. The generated data file will be the input data 
+to the next module in the directory 'Ldpc_128_training'. 
