@@ -25,4 +25,4 @@ And after training is done, the output data file is all failed decoding cases af
    
 Notice: The records in the output file include the whole iterative decoding information of each of all the decoding failures of NMS. In our examplary 
 setting, maximum iteration equal to 12 implies a list of length 12+1=13 for each bit of one decoding failure recorded, where '+1' comes from taking into
-account the received bit soft information as well.
+account the received bit soft information as well. The generated data file will be the input data for the next module in the directory 'DL_Training_serial'.
