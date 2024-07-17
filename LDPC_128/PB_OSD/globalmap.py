@@ -6,8 +6,6 @@ Created on Thu Nov 11 23:58:09 2021
 import read_TFdata as Reading
 import fill_matrix_info as Fill_matrix
 import numpy as np
-import os,sys
-
 map = {}
 def set_map(key, value):
     map[key] = value
@@ -38,7 +36,6 @@ def global_setting(argv):
     
     #filling parity check matrix info
     H_filename = get_map('H_filename')
-    set_map('training_snr',2.7)
     code = Fill_matrix.Code(H_filename)
     #store it onto global space
     set_map('code_parameters',code)
