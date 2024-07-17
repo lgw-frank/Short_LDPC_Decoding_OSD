@@ -10,7 +10,7 @@ Claim:The publishing information of the original paper was:
   publisher={IEEE}
 } 
 We reimplemented the ideas presented in the refered paper accordding to the steps described in Python strictly, for the purpose
-of comparing its performance with the decoding scheme we proposed cross a spectrum of metrics including frame error rate , complexity, 
+of comparing its performance with the decoding scheme we proposed cross a spectrum of metrics including frame error rate (FER) , complexity, 
 time delay etc. Notably, all comparisons are in the context of NMS decoding failures, that is the configuration of two-phase decoding
 like NMS+post-processing variant, where the second component is PB_OSD here. Again, part credits of some code snippets are contributed 
 to their original owners definitely, we promise to  reuse  them for academic purpose only. Surely we are not intended to infringe any 
