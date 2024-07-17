@@ -1,0 +1,35 @@
+Claim:The published information of the original paper was: 
+@article{yue2021probability,
+  title={Probability-based ordered-statistics decoding for short block codes},
+  author={Yue, Chentao and Shirvanimoghaddam, Mahyar and Park, Giyoon and Park, Ok-Sun and Vucetic, Branka and Li, Yonghui},
+  journal={IEEE Communications Letters},
+  volume={25},
+  number={6},
+  pages={1791--1795},
+  year={2021},
+  publisher={IEEE}
+} 
+We reimplemented the ideas presented in the refered paper accordding to the steps described in Python strictly, for the purpose
+of comparing its performance with the decoding scheme we proposed cross a spectrum of metrics including frame error rate , complexity, 
+time delay etc.  Again, part credits of some code snippets are contributed to their original owners definitely, we promise to  reuse 
+them for academic purpose only. Surely we are not intended to infringe any intellectual property right, please contact us for 
+immediate corrections if any. 
+       
+The entry function is defined in ldpc_128_testing.py file. To customize it to your scenario, just follow the listed steps 
+(Assume Spyder IDE run in Anaconda fo Win10):
+1) Check and make sure all Python packages in each file of subdirectory are installed; 
+2) In ldpc_128_testing.py, set the arguments in line 20 like this. However, it has to be aligned with the settings in 
+modules Ldpc_128_training and Testing_dat_gen_128:
+    sys.argv = "python 2.0 3.0 6 1000 100 12 CCSDS_ldpc_n128_k64.alist NMS-1".split()
+Concretely, 2.0,3.0, 6, 1000,100 were specified in module Testing_dat_gen_128; The other settings are specified in module Ldpc_128_training.
+3 ) In line 36 of ldpc_128_testing.py, the threshold condition for terminating the NMS failure cases are described which will be saved in the form
+of data files and accessed later by ordeded statistics decoding the second-phase post-processing:
+     GL.set_map('decoding_threshold',40000)
+4) In line 57 of the same file, the trained NMS-1 model will be loaded to perform testing work for the testing samples of all SNR points.
+
+5) In line 150 of the same file, the NMS decoding failures are stored sequentially after NMS decoding for each SNR point.
+   
+6) Click the 'Run file' button in the menu of Spyder, it is expected a training of NMS as a neural network model will start off.
+And after training is done, the output data file is all failed decoding cases after the well-trained model traverses all the training samples.
+   
+Notice: There will generate one  NMS decoding failure file for each SNR point. These generated data files will be the input data for the next module in the directory 'DL_OSD_Testing_serial'.
