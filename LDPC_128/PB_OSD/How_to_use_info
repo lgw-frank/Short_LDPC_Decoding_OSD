@@ -24,17 +24,18 @@ module Ldpc_128_testing:
     sys.argv = "python 2.0 3.0 6 1 12 CCSDS_ldpc_n128_k64.alist NMS-1".split()
 Concretely, batch_size=1 for PB_OSD due its strict TEP processing mode, and other settings mus align with those in the Module Ldpc_128_testing.
 3 ) In line 491 and line 498 of function definiton calculate_two_thresholds of pb_testing.py, two key threshold conditions are adapted for better
-frame error rate to match our proposed where the original settings in the neighborhood are commented out. The paied cost is the enlarged size of 
+frame error rate (FER) to match our proposed where the original settings in the neighborhood are commented out. The paied cost is the enlarged size of 
 traversed TEPs or lengthy time delay.
-4) In line 45-47  of globalmap.py file, three switches can be on/off to customize our scenario to the need of various comparisons. 
-5) Click the 'Run file' button in the menu of Spyder, it is expected PS_OSD will start off. Unfortunately, the process may require much time
+4) In line 45-47  of globalmap.py file, three switches can be on/off to customize our scenario to the need of generating the FERs for the ideal, 
+conventional OSD and PB based OSD decoders respectively:
+    set_map('convention_osd',False)
+    set_map('miracle_view',False)    
+    set_map('pb_osd',True)   
+5) Click the 'Run file' button in the menu of Spyder, it is expected PB_OSD will start off. Unfortunately, the process may require much time
 compared with what we proposed. In the worst-case, it may stagnate into finding the optimal via traversing all the TEPs available for specific received
 sequences before declaring early termination, which costs much elapsed time.
 And after testing is done, the obatained FER for each SNR is multiplied by the known FERs of NMS respectively to yield the comprehensive FER performance
 of the two-phase decoding configuration.
-BTW: Three switches are turned on/off in globalmap.py file to generate the FERs for the ideal, conventional OSD and PB based OSD decoders respectively:
-    set_map('convention_osd',False)
-    set_map('miracle_view',False)    
-    set_map('pb_osd',True)   
+
 Caveat:  The patience is in need to collect sufficiently many decoding failure of PB_OSD to ensure the FER stability. In our experience, at least 10 hours
 were expected to secure the number of decoding failures above 100 for PB_OSD post-processing  at each SNR point.
