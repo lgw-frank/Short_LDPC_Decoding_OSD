@@ -23,7 +23,7 @@ The entry function is defined in Main_FS_OSD.py file. To customize it to your sc
 module Ldpc_128_testing:
     sys.argv = "python 2.0 3.0 6 1 12 CCSDS_ldpc_n128_k64.alist NMS-1".split()
 Concretely, batch_size=1 for FS_OSD due its strict TEP processing mode, and other settings mus align with those in the Module Ldpc_128_testing.
-3 ) In lines 49-50 of globalmap.py, for the given code, its known minimum Hamming distance is 14, and tau_psc=30 for the consideration of comparable
+3 ) In lines 49-50 of globalmap.py, for the given code, its known minimum Hamming distance is 14, and tau_psc=30 (adapted) for the consideration of comparable
 frame error rate to match our proposed. The paied cost is the enlarged size of traversed TEPs or lengthy time delay.
     set_map('d_min',14)
     set_map('tau_psc',30)
