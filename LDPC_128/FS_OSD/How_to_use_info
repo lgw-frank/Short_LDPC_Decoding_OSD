@@ -30,7 +30,7 @@ The paied cost is the enlarged size of traversed TEPs or lengthy time delay.
     set_map('d_min',14)
     set_map('tau_psc',30)
 4) In lines 46-48 of globalmap.py file, three switches can be on/off to customize our scenario to the need of generating the FERs for the ideal, 
-conventional OSD and PB based OSD decoders respectively:
+conventional OSD and FS based OSD decoders respectively:
     set_map('miracle_view',False) 
     set_map('convention_osd',False)
     set_map('fs_osd',True) 
