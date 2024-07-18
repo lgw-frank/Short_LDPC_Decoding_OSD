@@ -32,6 +32,9 @@ compared with what we proposed. In the worst-case, it may stagnate into finding 
 sequences before declaring early termination, which costs much elapsed time.
 And after testing is done, the obatained FER for each SNR is multiplied by the known FERs of NMS respectively to yield the comprehensive FER performance
 of the two-phase decoding configuration.
-   
+BTW: Three switches are turned on/off in globalmap.py file to generate the FERs for the ideal, conventional OSD and PB based OSD decoders respectively:
+    set_map('convention_osd',False)
+    set_map('miracle_view',False)    
+    set_map('pb_osd',True)   
 Caveat:  The patience is in need to collect sufficiently many decoding failure of PB_OSD to ensure the FER stability. In our experience, at least 10 hours
 were expected to secure the number of decoding failures above 100 for PB_OSD post-processing  at each SNR point.
