@@ -1,0 +1,42 @@
+Claim:The publishing information of the original paper was: 
+@article{choi2019fast,
+  title={Fast and scalable soft decision decoding of linear block codes},
+  author={Choi, Changryoul and Jeong, Jechang},
+  journal={IEEE Communications Letters},
+  volume={23},
+  number={10},
+  pages={1753--1756},
+  year={2019},
+  publisher={IEEE}
+}
+We reimplemented the ideas presented in the refered paper accordding to the steps described in Python strictly, for the purpose
+of comparing its performance with the decoding scheme we proposed cross a spectrum of metrics including frame error rate (FER) , complexity, 
+time delay etc. Notably, all comparisons are in the context of NMS decoding failures, that is the configuration of two-phase decoding
+like NMS+post-processing variant, where the second component is FS_OSD here. Again, part credits of some code snippets are contributed 
+to their original owners definitely, we promise to  reuse  them for academic purpose only. Surely we are not intended to infringe any 
+intellectual property right, please contact us for immediate corrections if any. 
+       
+The entry function is defined in Main_FS_OSD.py file. To customize it to your scenario, just follow the listed steps 
+(Assume Spyder IDE run in Anaconda for Win10):
+1) Check and make sure all Python packages in each file of subdirectory are installed; 
+2) In Main_FS_OSD.py, set the arguments in line 13 like this. However, it has to be aligned with the settings in 
+module Ldpc_128_testing:
+    sys.argv = "python 2.0 3.0 6 1 12 CCSDS_ldpc_n128_k64.alist NMS-1".split()
+Concretely, batch_size=1 for FS_OSD due its strict TEP processing mode, and other settings mus align with those in the Module Ldpc_128_testing.
+3 ) In lines 49-50 of globalmap.py, for the given code, its known minimum Hamming distance is 14, and tau_psc=30 for the consideration of comparable
+frame error rate to match our proposed. The paied cost is the enlarged size of traversed TEPs or lengthy time delay.
+    set_map('d_min',14)
+    set_map('tau_psc',30)
+4) In lines 46-48 of globalmap.py file, three switches can be on/off to customize our scenario to the need of generating the FERs for the ideal, 
+conventional OSD and PB based OSD decoders respectively:
+    set_map('miracle_view',False) 
+    set_map('convention_osd',False)
+    set_map('fs_osd',True) 
+5) Click the 'Run file' button in the menu of Spyder, it is expected FS_OSD will start off. Unfortunately, the process may require much time
+compared with what we proposed. In the worst-case, it may stagnate into finding the optimal via traversing all the TEPs available for specific received
+sequences before declaring early termination, which costs much elapsed time.
+And after testing is done, the obatained FER for each SNR is multiplied by the known FERs of NMS respectively to yield the comprehensive FER performance
+of the two-phase decoding configuration.
+
+Caveat:  The patience is in need to collect sufficiently many decoding failure of FS_OSD to ensure the FER stability. In our experience, at least 10 hours
+were expected to secure the number of decoding failures above 100 for FS_OSD post-processing  at each SNR point.
