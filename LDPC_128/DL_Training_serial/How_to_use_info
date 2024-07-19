@@ -1,1 +1,29 @@
-Placeholder for further updates soon.
+Claim:The credits of some code snippets are contributed to their original owners definitely, we promise to  reuse them for academic purpose only. 
+       Surely we are not intended to infringe any intellectual property right, please contact us for immediate corrections if any. 
+       
+The entry function is defined in Main_DL.py file. To customize it to your scenario, just follow the listed steps 
+(Assume Spyder IDE run in Anaconda fo Win10):
+1) Check and make sure all Python packages in each file of subdirectory are installed; 
+2) In Main_DL.py, modify the arguments in line 12 if needed:
+    sys.argv = "python 2.7 2.7 100 12 CCSDS_ldpc_n128_k64.alist NMS-1".split() 
+all the arguments and their denotations are the same as these listed in ldpc_128_training.py file of module/directory Ldpc_128_training.  
+
+3) For the line 104 of logistic_setting() in globalmap.py file: restore_step = '',  is initiated. Then once the training process is accidenttally interrupted, we can alter via setting restore_step = 'latest' to resume the training since the recorded latest checkpoint without starting from scratch.
+
+4) In the first phase: in the lines 59-60 of the globalmap.py, 
+    set_map('reliability_enhance',True) 
+    set_map('prediction_order_pattern',False)
+The training parameters of stochastic gradient descending adopt the Adam optimizer whose values are set in the definition of global_setting(argv) in globalmap.py. And the training data is fetched from the directory in definition of data_setting (code,unit_batch_size) of the same file. Notably, this directory is actually the output data path determined in Ldpc_128_training module.
+   
+5) Click the 'Run file' button in the menu of Spyder, it is expected to train a CNN model to improve codeword bit reliability measurements. This training will terminate before reaching the predetermined evaluation of line 43 set_map('termination_step',5000) in globalmap.py file. Notably, besides the trained CNN model itself, the output yields as well a decoding path consisting of a list of test error pattern blocks (order patterns)  whose priorities are determined by ratios of the occurrences of original error patterns to the block size after the well-trained CNN model traverses all the training samples.
+
+6)In the second phase: line 104 of logistic_setting() in globalmap.py file: restore_step = 'latest' is evaluated to assume the CNN model is ready to support the subsequent sliding window model training. Besides, in lines 59-60 of globalmap.py,
+    set_map('reliability_enhance',False) 
+    set_map('prediction_order_pattern',True)  
+The training parameters of stochastic gradient descending adopt the Adam optimizer whose values are set in the definition of global_setting(argv) again in globalmap.py to training the sliding-window model. And the training samples has to be generated for the first time by setting lines 62-64:
+    set_map('decoding_length',30) 
+    set_map('regnerate_training_samples',True)
+    set_map('sliding_win_width',5)  #the setting can be optimized to further improve FER
+afterwards,  set_map('regnerate_training_samples',False)  will skip the step of generating training samples to pursue fine-tunning of sliding window model, under the condition of  no alternation for the decoding length which defines the length of decoding path or sliding window width. Then trained sliding window model ended with a summary of its performance on all training samples.
+
+In sum, a CNN model is firstly trained to improve bit reliability measurement. Then a decoding path is established based on the model output. Lastly, a sliding window model is trained to detect the optimal early decoding termination times when sliding the inspecting window along the decoding path, for the target of reducing average number of TEPs inspected without hurting frame error rate (FER) too much.
