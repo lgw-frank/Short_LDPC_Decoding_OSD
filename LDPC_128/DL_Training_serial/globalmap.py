@@ -56,11 +56,11 @@ def global_setting(argv):
     
     set_map('nn_train',True)
     set_map('segment_num',6)
-    set_map('reliability_enhance',True)
-    set_map('prediction_order_pattern',False)    
-    set_map('decoding_length',30)    
+    set_map('reliability_enhance',False)
+    set_map('prediction_order_pattern',True)    
     set_map('regulation_weight',10.) 
-    set_map('regnerate_training_samples',False)
+    set_map('decoding_length',30) 
+    set_map('regnerate_training_samples',True)
     set_map('sliding_win_width',5)  #the setting can be optimized to further improve FER
     
 def secure_segment_threshold():
@@ -101,7 +101,7 @@ def logistic_setting_model(indicator_list,prefix_list):
     if not os.path.exists(ckpts_dir):
         os.makedirs(ckpts_dir)   
     ckpt_nm = 'ldpc-ckpt'  
-    restore_model_step = ''
+    restore_model_step = 'latest'
     restore_model_info = [ckpts_dir,ckpt_nm,restore_model_step]
     return restore_model_info    
 
