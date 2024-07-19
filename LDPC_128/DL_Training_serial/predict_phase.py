@@ -148,25 +148,20 @@ def train_sliding_window(restore_list,indicator_list,prefix_list,DIA):
     snr_lo = round(GL.get_map('snr_lo'),2)
     snr_hi = round(GL.get_map('snr_hi'),2)
     snr_info = '/'+str(snr_lo)+"-"+str(snr_hi)+'dB/'
-    num_blocks = GL.get_map('num_blocks')
+    decoding_length = GL.get_map('decoding_length')
     convention_path_indicator = GL.get_map('convention_path')
     if convention_path_indicator:
-        tep_blocks,nn_type = Boundary.query_convention_path(indicator_list,prefix_list,DIA)
+        residual_path,nn_type = Boundary.query_convention_path(indicator_list,prefix_list,DIA)
     else:    
-        tep_blocks,acc_block_size,nn_type = Boundary.query_decoding_path(indicator_list,prefix_list,DIA)
-    tep_info = (tep_blocks,acc_block_size)
+        residual_path,nn_type = Boundary.query_decoding_path(indicator_list,prefix_list,DIA)
     if GL.get_map('regnerate_training_samples'):
         selected_ds = GL.data_setting()
         option_tuple = (indicator_list,DIA)
-        saved_summary, records_matrix = Boundary.query_samples(selected_ds,restore_info,tep_info,nn_type,option_tuple)
+        saved_summary, records_matrix = Boundary.query_samples(selected_ds,restore_info,residual_path,nn_type,option_tuple)
     else:
         #open the file saved in disk
         logdir = './log/'+nn_type+snr_info  
-        if GL.get_map('extending_tep'):
-            str_ext = 'extended'
-        else:
-            str_ext = 'proper'
-        nominal_actual_length =  'order-pattern-len'+str(num_blocks)+'-'+str_ext+'-'
+        nominal_actual_length =  'order-pattern-len'+str(decoding_length)+'-'
         file_name = logdir+nominal_actual_length+nn_type+".pkl"
         if not os.path.exists(file_name):
             print('Directiory not found, please check again!')
@@ -278,7 +273,7 @@ def train_sliding_window(restore_list,indicator_list,prefix_list,DIA):
     log_dir = './log/'+nn_predic_type+'/'+snr_info+'dB/'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)  
-    with open(log_dir+'length-'+str(num_blocks)+'prediction-phase-one.txt', "a+") as f:
+    with open(log_dir+'length-'+str(decoding_length)+'prediction-phase-one.txt', "a+") as f:
         f.write('\nFor Summery of '+snr_info+'dB:\n')
         f.write(f'dist_samples:{dist_samples}\n')
         f.write(f'dist_labels:{dist_labels}\n')

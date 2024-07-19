@@ -9,7 +9,7 @@ import globalmap as GL
 import tensorflow as tf
 from tensorflow.keras import  metrics
 import nn_net as CRNN_DEF
-from collections import Counter
+from collections import Counter,defaultdict,OrderedDict
 import numpy as np
 import pickle,re
 import  os
@@ -367,7 +367,7 @@ def Training_NN(selected_ds,restore_info,indicator_list,prefix_list,DIA=False):
                 break
         step = 0
         exponential_decay = GL.optimizer_setting()
-        optimizer = tf.keras.optimizers.Adam(exponential_decay)
+        optimizer = tf.keras.optimizers.legacy.Adam(exponential_decay)
         checkpoint = tf.train.Checkpoint(myAwesomeModel=nn, myAwesomeOptimizer=optimizer)
         summary_writer,manager_current = GL.log_setting(restore_info,checkpoint,prefix)
         #unpack related info for restoraging
@@ -495,8 +495,8 @@ def Training_NN(selected_ds,restore_info,indicator_list,prefix_list,DIA=False):
         pickle.dump(dic_sum_end,fh)
         pickle.dump(dic_sum,fh)
         pickle.dump(merged_counter,fh)
-        pickle.dump(updated_counter,fh)          
-
+        pickle.dump(updated_counter,fh)   
+        
 def NN_gen(restore_info,indicator_list):  
     cnn = CRNN_DEF.conv_bitwise()
     rnn1 = CRNN_DEF.rnn_one()
@@ -574,131 +574,4 @@ def stat_pro_osd(inputs,labels):
         swap_len_list.append(swap_sum)
     return updated_MRB_list,swap_len_list 
 
-# def Training_NN2(selected_ds,restore_info,indicator_list,prefix_list,DIA=False):
-#     snr_lo = round(GL.get_map('snr_lo'),2)
-#     snr_hi = round(GL.get_map('snr_hi'),2)
-#     list_length = GL.get_map('num_iterations')+1
-#     decoder_type = GL.get_map('selected_decoder_type')
-#     snr_info = str(snr_lo)+'-'+str(snr_hi)
-#     print_interval = GL.get_map('print_interval')
-#     record_interval = GL.get_map('record_interval')
-#     prefix = 'benchmark'
-#     #query of size of input feedings
-#     input_list = list(selected_ds.as_numpy_iterator())
-#     num_counter = len(input_list) 
-#     if DIA:
-#         epochs = GL.get_map('epochs') 
-#         cnn = CRNN_DEF.conv_1d_13()
-#         rnn1 = CRNN_DEF.rnn_one()
-#         rnn2 = CRNN_DEF.rnn_two()
-#         nn_list = [cnn,rnn1,rnn2]    
-#         for i,element in enumerate(indicator_list):
-#             if element == True:
-#                 nn = nn_list[i]
-#                 prefix = prefix_list[i]
-#                 break
-#         step = 0
-#         exponential_decay = GL.optimizer_setting()
-#         optimizer = tf.keras.optimizers.Adam(exponential_decay)
-#         checkpoint = tf.train.Checkpoint(myAwesomeModel=nn, myAwesomeOptimizer=optimizer)
-#         summary_writer,manager_current = GL.log_setting(restore_info,checkpoint,prefix)
-#         #unpack related info for restoraging
-#         [ckpts_dir,ckpt_nm,restore_step] = restore_info  
-#         if restore_step:
-#             print('Load the previous saved model from disk!')
-#             step,ckpt_f = retore_saved_model(ckpts_dir,restore_step,ckpt_nm)
-#             status = checkpoint.restore(ckpt_f)
-#             status.expect_partial()  
-#             #nn.print_model()
-#             #print_flops(nn)
-#             #nn.obtain_paras()
-#             #print_model_summary(nn)
-#         loss_meter = metrics.Mean()
-#         #initialize starting point
-#         start_epoch = step//num_counter
-#         residual = step%num_counter
-#         jump_loop = False
-#         if GL.get_map('nn_train'):  
-#             if step < GL.get_map('termination_step'):
-#                 for epoch in range(start_epoch,epochs):
-#                     print("\nStart of epoch %d:" % epoch) 
-#                     for i in range(residual,num_counter):
-#                         squashed_inputs,inputs,labels = nn.preprocessing_inputs(input_list[i])
-#                         step = step + 1
-#                         with tf.GradientTape() as tape:
-#                             refined_inputs = nn(squashed_inputs)
-#                             loss = calculate_loss(refined_inputs,labels)
-#                             loss_meter.update_state(loss) 
-#                         total_variables = nn.trainable_variables         
-#                         grads = tape.gradient(loss,total_variables)
-#                         grads_and_vars=zip(grads, total_variables)
-#                         capped_gradients = [(tf.clip_by_norm(grad,5e2), var) for grad, var in grads_and_vars if grad is not None]
-#                         optimizer.apply_gradients(capped_gradients)   
-#                         if step % print_interval == 0:   
-#                             print('Step:%d  Loss:%.3f'%(step,loss.numpy()))
-#                             #_ = evaluate_MRB_bit(inputs,labels)
-#                             #_ = evaluate_MRB_bit(refined_inputs,labels)                                                               
-#                         if step % record_interval == 0:
-#                             manager_current.save(checkpoint_number=step)                   
-#                         if step >= GL.get_map('termination_step'):
-#                             jump_loop = True
-#                             break
-#                         loss_meter.reset_states()  
-#                     residual = 0
-#                     if jump_loop:
-#                         break
-#                 #save the latest setting
-#                 manager_current.save(checkpoint_number=step) 
-
-#     #verifying trained pars from start to end    
-#     dic_sum = {}
-#     actual_size = 0
-#     pattern_cnt = Counter()
-#     swap_list = []
-#     loss_sum = 0.
-#     for i in range(num_counter):
-#         if DIA:
-#             squashed_inputs,inputs,labels = nn.preprocessing_inputs(input_list[i])
-#             updated_inputs = nn(squashed_inputs)
-#             #loss1 = calculate_loss(inputs,labels)
-#             loss = calculate_loss(updated_inputs,labels)
-#             #print(f"Original Loss:{loss1:.4f} Updated Loss:{loss:.4f}")
-#         else:
-#             updated_inputs = input_list[i][0][list_length-1::list_length]
-#             loss = calculate_loss(updated_inputs,labels)
-#         loss_sum += loss
-#         labels = input_list[i][1][list_length-1::list_length]
-#         actual_size += updated_inputs.shape[0]
-
-#         cmp_results = evaluate_MRB_bit(updated_inputs,labels)
-#         dic_sum = dic_union(dic_sum,cmp_results)
-#         #query pattern distribution
-#         pattern_cnt,swap_len_list = query_pattern_dist(updated_inputs,labels,pattern_cnt) 
-#         swap_list += swap_len_list
-#         if (i+1)%100 == 0:
-#             print(dic_sum) 
-#             #print(pattern_cnt) 
-
-#     # Merge identical keys by summing their counts
-#     merged_counter = Counter()
-#     for key, value in pattern_cnt.items():
-#         summed_key = sum(ast.literal_eval(key))
-#         merged_counter[summed_key] += value  
-        
-#     average_loss = loss_sum/actual_size
-#     average_swaps = sum(swap_list)/len(swap_list)
-#     print(f'Total counts:{actual_size}')
-#     print(f'average swaps:{average_swaps:.4f} \naverage loss:{average_loss:.4f}')
-#     print('Summary before GE for '+prefix+':',dic_sum)
-#     print('Summary of after GE for '+prefix+':',merged_counter)
-#     #save on disk files
-#     log_dir = './log/'+decoder_type+'/'+snr_info+'dB/'
-#     if not os.path.exists(log_dir):
-#         os.makedirs(log_dir)  
-#     with open(log_dir+"dist-error-pattern-"+prefix+".pkl", "wb") as fh:
-#         pickle.dump(actual_size,fh)
-#         pickle.dump(dic_sum,fh)
-#         pickle.dump(pattern_cnt,fh) 
-
-                            
 
