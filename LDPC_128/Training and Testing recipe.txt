@@ -1,0 +1,29 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov  1 21:12:25 2022
+
+@author: zidonghua_30
+"""
+Training and Testing Recipe:
+
+1) In directory:./Training_data_gen_128 with Main_train.py, generate training data for mixed samples 
+   in range of  2.8dB-4.0dB, batch_size:100, batch_num:100 for instance of code (128,64), 
+   yielding an output file *.tfrecord
+   
+2) In directory:./Ldpc_128_training with ldpc_128_training.py, training NMS-2 decoding scheme feeding in above generated data, 
+    yielding a set of trained parameters, as well as an output file named *retrain.tfrecord, 
+    which records the track of all failed cases in decoding. That is, for each case, all LLR 
+    outputs at each iteration will be saved instead just the last iteration, which acts as the feedings 
+    for later employment of machine learning.
+    
+3) In directory:./DL_Training with Main_DL.py, deep learning technique, such as CNN, RNN toggle switch is applied with feeding data from step 2, the porpose of which 
+    is to tune the output LLR of failed decodings so that they can be adapted for further re-decoding attempt. 
+    As a result, its outcome is a fine-tuned model with trained parameters saved on files in 
+    current directory ./ckpts/*. Meanwhile, the the decoding path is decided by simulation after traversing all cases of input file.
+    
+4) In directory:Testing_data_gen_128 with Main_test.py,, generate testing data per SNR point of interest.
+
+5)In directory:Ldpc_128_testing with ldpc_128_tesing.py, with each file of saved decoding failures per SNR point of interest.
+
+6) In directory:./DL_OSD_Testing/ with Main_DL_OSD.py, veriy the effectiveness presented in step 3 to show the power of the DIA. 
+    
