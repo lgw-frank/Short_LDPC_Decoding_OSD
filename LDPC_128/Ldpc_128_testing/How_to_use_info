@@ -15,7 +15,4 @@ of data files and accessed later by ordeded statistics decoding the second-phase
 
 5) In line 150 of the same file, the NMS decoding failures are stored sequentially after NMS decoding for each SNR point.
    
-6) Click the 'Run file' button in the menu of Spyder, it is expected a training of NMS as a neural network model will start off.
-And after training is done, the output data file is all failed decoding cases after the well-trained model traverses all the training samples.
-   
-Notice: There will generate one  NMS decoding failure file for each SNR point. These generated data files will be the input data for the next module in the directory 'DL_OSD_Testing_serial'.
+6) Click the 'Run file' button in the menu of Spyder, it is expected a group of  output data files will be generated to record all failed decoding cases for each SNR point. These generated data files will be the input data for the next module in the directory 'DL_OSD_Testing_serial'.
