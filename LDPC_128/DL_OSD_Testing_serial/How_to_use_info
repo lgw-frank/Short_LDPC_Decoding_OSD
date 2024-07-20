@@ -1,1 +1,23 @@
-Placeholder to update
+Claim:The credits of some code snippets are contributed to their original owners definitely, we promise to  reuse them for academic purpose only. 
+       Surely we are not intended to infringe any intellectual property right, please contact us for immediate corrections if any. 
+       
+The entry function is defined in Main_DL_OSD.py file. To customize it to your scenario, just follow the listed steps 
+(Assume Spyder IDE run in Anaconda fo Win10):
+1) Check and make sure all Python packages in each file of subdirectory are installed; 
+2) In Main_DL_OSD.py, set the arguments in line 13 like this. Most of these arguments have to be aligned with the settings in 
+modules Ldpc_128_testing, considering the model will be fed with NMS decoding failures which are generated in module Ldpc_128_testing.
+    sys.argv = "python 2.0 3.0 6 100  12 CCSDS_ldpc_n128_k64.alist NMS-1".split()
+3 ) Same as other modules, the settings in the function global_setting(argv) of globalmap.py have to be adapted or twiddled  for better performance, and some of them have to in line with the settings in the related modules. Say
+    set_map('threshold_sum',3)     #equivalent to the order p in conventional OSD.
+    set_map('training_snr',2.7)     #match training scenario in modules of DL_Training_serial and Ldpc_128_training
+    set_map('segment_num',6)        #match the setting in module of DL_Training_serial
+    set_map('soft_margin',0.9)      #Twiddled to balance FER vs. complexity
+    set_map('decoding_length',30)    #match the setting in module of DL_Training_serial
+    set_map('sliding_win_width',5)  #match the setting in module of DL_Training_serial
+
+4) In lines 93 and 115 of the same file, the setting of restore_model_step = 'latest' will loaded the parameters trained well for 
+CNN model and sliding window model respectively
+
+5) Click the 'Run file' button in the menu of Spyder, it is expected the testing of FER on various SNR points will start off.
+   
+Notice: The FERs will be recorded in a text file for later retrieval, besides real-time rendering on screen. 
